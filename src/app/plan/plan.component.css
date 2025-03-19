@@ -1,0 +1,186 @@
+#canvas-container {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.grabbing {
+  cursor: grabbing;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.crosshair {
+  cursor: crosshair;
+}
+
+.auto {
+  cursor: auto;
+}
+
+.buttons-nav {
+  position: absolute;
+  display: flex;
+  z-index: 11;
+  top: 25px;
+  right: 25px;
+  left: 25px;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: calc(100% - 50px);
+}
+
+.buttons-nav .radius-50 {
+  border-radius: 50%;
+}
+
+.add-modify-part {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% - 3px);
+  max-width: 897px;
+  border-right: 3px solid #c1c1c1;
+  height: 100%;
+  background-color: #fff;
+  z-index: 22;
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+.add-modify-part .top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px;
+  width: calc(100% - 60px);
+}
+
+.add-modify-part .top p {
+  color: var(--primary-col);
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.add-modify-part .form {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  padding: 30px;
+  width: calc(100% - 60px);
+  gap: 20px;
+}
+
+.add-modify-part .form mat-form-field {
+  width: 100%;
+  max-width: 400px;
+}
+
+.add-modify-part .form mat-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.add-modify-part .form mat-radio-group mat-label {
+  font-size: 14px;
+  color: #000;
+}
+
+.add-modify-part .top mat-icon {
+  color: #c1c1c1;
+}
+.add-modify-part .top mat-icon:hover {
+  cursor: pointer;
+  color: #9a9a9a;
+}
+
+.add-modify-part .vis-table {
+  width: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.instructions {
+  display: flex;
+  width: calc(100% - 60px);
+  padding: 0 30px;
+  flex-direction: column;
+}
+
+.instructions p {
+  font-size: 16px;
+  color: #878787;
+  letter-spacing: 0.06em;
+
+}
+
+#table {
+  border: 1px solid darkgoldenrod;
+  background-color: goldenrod;
+  cursor: pointer;
+}
+
+#hide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 16;
+}
+
+#posti-scelti {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  background-color: #f4f4f4;
+  color: #303030;
+  padding: 20px;
+  border: 1px solid #303030;
+}
+
+#with-spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#with-spinner mat-spinner {
+  width: 100%;
+  max-width: 350px;
+}
+
+#search {
+  max-width: 300px;
+  width: 100%;
+  background-color: #fff !important;
+}
+
+
+#cont-total {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}

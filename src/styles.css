@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; width: 100% }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+* {
+  --warn-col: #f44336;
+  --primary-col: #005cbb;
+  --accent-col: #343dff;
+  --light-col: #d7e3ff;
+  --color-calendar: #b7b7b7;
+}
+
+.no-hint .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}

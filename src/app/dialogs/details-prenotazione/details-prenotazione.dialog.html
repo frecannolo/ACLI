@@ -1,0 +1,29 @@
+<div id="container">
+  <div id="header">
+    <p>Recap prenotazione</p>
+    <mat-icon (click)="close()">close</mat-icon>
+  </div>
+
+  <div id="content">
+    <div id="dati-prenotazione">
+      <div>
+        <p>Nome:&nbsp;</p>
+        <p>{{ data.nome }}</p>
+      </div>
+      <div>
+        <p>Numero di posti:&nbsp;</p>
+        <p>{{ data.num }}</p>
+      </div>
+      <div>
+        <p>Colore:&nbsp;</p>
+        <div id="color" [style]="getBgColor()"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer">
+    <button mat-button color="primary" (click)="mod_dati()">MODIFICA DATI</button>
+    <button mat-button color="primary" (click)="mod_places()">MODIFICA POSTI</button>
+    <button mat-button color="warn" (click)="del()">ELIMINA</button>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div id="container">
+  <div id="header">
+    <p>Risistema prenotazioni</p>
+    <mat-icon (click)="myself.close()">close</mat-icon>
+  </div>
+
+  <div id="content">
+    Confermi di voler ridefinire i posti delle prenotazioni nei posti scelti dal software?
+  </div>
+
+  <div id="footer">
+    <button mat-button color="primary" (click)="myself.close()">ANNULLA</button>
+    <button mat-button color="primary" (click)="conferma()">CONFERMA</button>
+  </div>
+</div>

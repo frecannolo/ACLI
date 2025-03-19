@@ -1,0 +1,15 @@
+<div id="container">
+  <div id="header">
+    <p>Elimina prenotazione</p>
+    <mat-icon (click)="close()">close</mat-icon>
+  </div>
+
+  <div id="content">
+    Confermi questa scelta? Se una prenotazione ha tutti i posti su questo tavolo, verrà eliminata anche quest'ultima.
+  </div>
+
+  <div id="footer">
+    <button mat-button color="primary" (click)="close()">ANNULLA</button>
+    <button mat-button color="warn" (click)="del()">ELIMINA</button>
+  </div>
+</div>

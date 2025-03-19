@@ -1,0 +1,128 @@
+
+<div id="canvas-container">
+  <canvas id="canvas" #canvas [class]="cursorClass" [width]="DIM_BACKGROUND_WIDTH" [height]="DIM_BACKGROUND_HEIGHT"
+          (mousedown)="handleClick($event)" (mousemove)="handleMove($event)" (mouseup)="handleReleaseCLick()"></canvas>
+</div>
+
+<div class="buttons-nav">
+  <button mat-fab extended *ngIf="onPrenCreation" [disabled]="!canCompletePrenotazione()" (click)="completePrenotazione(tempPostiPrenotazioni)">COMPLETA PRENOTAZIONE</button>
+  <div style="flex: 1 1 auto"></div>
+  <mat-form-field appearance="outline" class="no-hint" id="search" *ngIf="action == 'search'">
+    <mat-label>Cerca prenotazione</mat-label>
+    <input matInput type="text" [matAutocomplete]="autocompleteSearch" [(ngModel)]="search" (ngModelChange)="searchPrenotazione()">
+    <mat-autocomplete autoActiveFirstOption #autocompleteSearch="matAutocomplete">
+      <mat-option *ngFor="let pr of prenotazioni | filterPrenotazioni:search" [value]="pr.nome">{{pr.nome}}</mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <button mat-fab *ngIf="action != 'move-table' && action != 'mod-posti' && action != 'mod-pren-posti' && action != 'search' && action != 'sel-table' && action != 'mod-table' && prenotazioni.length > 0" class="radius-50" (click)="prepareRepose()"><span class="material-symbols-outlined">cycle</span></button>
+  <button mat-fab *ngIf="action != 'move-table' && action != 'mod-posti' && action != 'mod-pren-posti' && action != 'search' && action != 'sel-table' && action != 'mod-table' && prenotazioni.length > 0" class="radius-50" (click)="prepareSearch()"><mat-icon>search</mat-icon></button>
+  <button mat-fab *ngIf="action != 'move-table' && action != 'mod-posti' && action != 'mod-pren-posti' && action != 'search' && action != 'sel-table' && action != 'mod-table' && tables.length > 0" class="radius-50" (click)="action = 'sel-table'"><mat-icon>ads_click</mat-icon></button>
+  <button mat-fab *ngIf="action != 'move-table' && action != 'mod-posti' && action != 'mod-pren-posti' && action != 'search' && action != 'sel-table' && action != 'mod-table' && tables.length > 0" class="radius-50" (click)="action = 'move-table'"><span class="material-symbols-outlined">drag_pan</span></button>
+  <button mat-fab *ngIf="action != 'move-table' && action != 'mod-posti' && action != 'mod-pren-posti' && action != 'search' && action != 'sel-table' && action != 'mod-table'" class="radius-50" (click)="setAddTable()"><mat-icon>add</mat-icon></button>
+  <button mat-fab *ngIf="action != 'move-table' && action != 'mod-posti' && action != 'mod-pren-posti' && action != 'search' && action != 'sel-table' && action != 'mod-table' && tables.length > 0" class="radius-50" (click)="setAddPren()"><mat-icon>bookmark_add</mat-icon></button>
+  <button mat-fab *ngIf="action == 'move-table' || ((action == 'mod-posti' || action == 'mod-pren-posti') && this.inputsPrenotazione.numero == this.tempPostiPrenotazioni.length)" class="radius-50" (click)="doneAction()"><mat-icon>done</mat-icon></button>
+  <button mat-fab *ngIf="action == 'mod-posti' || action == 'mod-pren-posti' || action == 'search' || action == 'sel-table'" class="radius-50" (click)="closeAction()"><mat-icon>close</mat-icon></button>
+  <!-- <button mat-fab><mat-icon>recenter</mat-icon></button> -->
+</div>
+
+<div class="add-modify-part" *ngIf="action == 'add-table' || action == 'mod-table'">
+  <div class="top">
+    <p>{{ action == 'add-table'? 'Aggiungi': 'Modifica' }} un tavolo</p>
+    <mat-icon (click)="close()">close</mat-icon>
+  </div>
+
+  <div class="form">
+    <mat-form-field appearance="outline" class="no-hint">
+      <mat-label>Posti per {{ getRowColumn() }} *</mat-label>
+      <input matInput type="number" [min]="1" [(ngModel)]="inputsTable.row">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="no-hint">
+      <mat-label>Orientamento *</mat-label>
+      <mat-select [(ngModel)]="inputsTable.or">
+        <mat-option [value]="0">Orizzontale</mat-option>
+        <mat-option [value]="1">Verticale</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="instructions" *ngIf="action == 'add-table'">
+    <p>Tieni premuto il tavolo per poterlo inserire nel piano.</p>
+  </div>
+
+  <div class="instructions" *ngIf="action == 'mod-table'">
+    <p *ngIf="inputsTable.row && tempTable.row - inputsTable.row > getMaxRowsToRem()">Non puoi eliminare più di {{ getMaxRowsToRem() }} {{ getRowsColumns() }}</p>
+    <p *ngIf="canModifyTable() && this.tempTable.orientamento != this.inputsTable.or">Seleziona il nuovo posto per il tavolo</p>
+  </div>
+
+  <div class="vis-table" *ngIf="canAddTable() || (canModifyTable() && (this.tempTable.orientamento != this.inputsTable.or || getDeltaRow() < 0))">
+    <div id="table" [ngStyle]="getStyleTable()"
+         (mousedown)="startTempCLickedTable($event)" (mouseup)="stopTempCLickedTable()"></div>
+  </div>
+
+  <div class="form" *ngIf="action == 'mod-table' && this.tempTable.orientamento == this.inputsTable.or && getDeltaRow() >= 0">
+    <button mat-button *ngIf="action == 'mod-table'" [disabled]="!canModifyTable()" (click)="modifyTable()" color="primary">CONTINUA</button>
+  </div>
+</div>
+
+<div class="add-modify-part" *ngIf="action == 'add-pren' || action == 'mod-pren'">
+  <div class="top">
+    <p>{{ action == 'add-pren'? 'Aggiungi': 'Modifica' }} una prenotazione</p>
+    <mat-icon (click)="close()">close</mat-icon>
+  </div>
+
+  <div class="form">
+    <mat-form-field appearance="outline" class="no-hint">
+      <mat-label>Nome prenotazione *</mat-label>
+      <input matInput type="text" [(ngModel)]="inputsPrenotazione.nome">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="no-hint">
+      <mat-label>Numero di prenotati *</mat-label>
+      <input matInput type="number" [min]="1" [(ngModel)]="inputsPrenotazione.numero" (ngModelChange)="inputsPrenotazione.disposizione = -1">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="no-hint">
+      <mat-label>Colore *</mat-label>
+      <input matInput type="color" [(ngModel)]="inputsPrenotazione.color">
+      <span matTextSuffix style="text-transform: uppercase">&nbsp;{{inputsPrenotazione.color}}</span>
+    </mat-form-field>
+
+    <mat-radio-group *ngIf="action == 'add-pren'" [(ngModel)]="inputsPrenotazione.disposizione">
+      <mat-label>Disposizione dei posti *</mat-label>
+      <mat-radio-button [value]="0" color="primary">Li sistemo personalmente</mat-radio-button>
+      <mat-radio-button [value]="1" color="primary">Li faccio sistemare in automatico</mat-radio-button>
+    </mat-radio-group>
+
+    <mat-radio-group *ngIf="action == 'mod-pren' && deltaPosti() >= 0" [(ngModel)]="inputsPrenotazione.disposizione">
+      <mat-label>Disposizione dei posti *</mat-label>
+      <mat-radio-button [value]="0" color="primary" *ngIf="deltaPosti() > 0">Li sistemo personalmente</mat-radio-button>
+      <mat-radio-button [value]="1" color="primary" *ngIf="deltaPosti() > 0">Li faccio sistemare in automatico</mat-radio-button>
+      <mat-radio-button [value]="2" color="primary" *ngIf="deltaPosti() == 0">Non voglio fare cambiamenti</mat-radio-button>
+      <mat-radio-button [value]="3" color="primary" *ngIf="deltaPosti() == 0">Voglio cambiare personalmente la sistemazione</mat-radio-button>
+      <mat-radio-button [value]="4" color="primary" *ngIf="deltaPosti() == 0">Voglio cambiare in automatico la sistemazione</mat-radio-button>
+    </mat-radio-group>
+
+    <div class="instructions" *ngIf="inputsPrenotazione.disposizione != -1">
+      <p *ngIf="action == 'add-pren' && inputsPrenotazione.disposizione == 0">Seleziona i posti a sedere che desideri nei tavoli che desideri.</p>
+      <p *ngIf="action == 'add-pren' && inputsPrenotazione.disposizione == 1 || inputsPrenotazione.disposizione == 4">Una volta cliccato il tasto "continua" il software sceglierà il tavolo e i posti migliori.</p>
+      <p *ngIf="action == 'mod-pren' && deltaPosti() > 0 && inputsPrenotazione.disposizione == 0">Rimuovi {{deltaPosti()}} posti a sedere e modifica gli altri se lo desideri.</p>
+      <p *ngIf="action == 'mod-pren' && deltaPosti() > 0 && inputsPrenotazione.disposizione == 1">Verranno rimossi {{deltaPosti()}} posti, i rimanenti verranno posizionati dal software.</p>
+    </div>
+    <div class="instructions" style="margin-top: 20px" *ngIf="action == 'mod-pren' && deltaPosti() < 0">
+      <p>Posiziona {{deltaPosti() == -1? 'un altro posto': ('altri ' + (-deltaPosti()) + ' posti')}} dove desideri.</p>
+    </div>
+
+    <button mat-button *ngIf="action == 'add-pren'" color="primary" [disabled]="!canAddPren()" (click)="startPrenotazione()">CONTINUA</button>
+    <button mat-button *ngIf="action == 'mod-pren'" color="primary" [disabled]="!canModPren()" (click)="modPrenotazione()">CONTINUA</button>
+  </div>
+</div>
+
+<div id="hide" *ngIf="action == 'add-table' || action == 'add-pren' || action == 'mod-pren' || action == 'mod-table'"></div>
+
+<p id="posti-scelti" *ngIf="onPrenCreation || action == 'mod-posti' || action == 'mod-pren-posti'">Posti scelti: {{tempPostiPrenotazioni.length}}/{{inputsPrenotazione.numero}}</p>
+
+<div id="with-spinner" *ngIf="showSpinner">
+  <mat-spinner></mat-spinner>
+</div>

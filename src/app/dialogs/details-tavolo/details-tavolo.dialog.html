@@ -1,0 +1,28 @@
+<div id="container">
+  <div id="header">
+    <p>Recap tavolo</p>
+    <mat-icon (click)="myself.close()">close</mat-icon>
+  </div>
+
+  <div id="content">
+    <div id="dati-tavolo">
+      <div>
+        <p>Posti a sedere:&nbsp;</p>
+        <p>{{ data.row * 2 }}</p>
+      </div>
+      <div>
+        <p>Orientamento:&nbsp;</p>
+        <p>{{ data.orientamento == 0? 'orizzontale': 'verticale' }}</p>
+      </div>
+      <div>
+        <p>Posti utilizzati:&nbsp;</p>
+        <p>{{ data.prenotazioni.length }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer">
+    <button mat-button color="primary" (click)="mod_dati()">MODIFICA</button>
+    <button mat-button color="warn" (click)="del()">ELIMINA</button>
+  </div>
+</div>
